@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Crypto Monitor</string>
+    <string name="button_clear_description">Clear search</string>
+    <string name="search_hint">Search by asset\'s name</string>
+    <string name="button_favorite_description">Favorite button</string>
+    <string name="message_empty">There is no data yet</string>
+    <string name="message_wait">Please wait</string>
+    <string name="message_error">Can\'t fetch data. Check your network and try pull to refresh</string>
+</resources>
