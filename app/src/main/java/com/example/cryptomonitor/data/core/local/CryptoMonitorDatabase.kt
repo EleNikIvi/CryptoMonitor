@@ -4,15 +4,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.cryptomonitor.data.assets.local.AssetDao
 import com.example.cryptomonitor.model.Asset
-import com.example.cryptomonitor.data.assets.local.FavoriteAssetDao
-import com.example.cryptomonitor.model.FavoriteAsset
+import com.example.cryptomonitor.data.assets.local.FavoriteIdDao
+import com.example.cryptomonitor.model.FavoriteId
 
 @Database(
-    entities = [Asset::class, FavoriteAsset::class],
+    entities = [Asset::class, FavoriteId::class],
     version = 1,
     exportSchema = false
 )
 abstract class CryptoMonitorDatabase : RoomDatabase() {
     abstract val assetDao: AssetDao
-    abstract val favoriteAssetDao: FavoriteAssetDao
+    abstract val favoriteIdDao: FavoriteIdDao
 }

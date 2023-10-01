@@ -15,7 +15,7 @@ import com.example.cryptomonitor.ui.core.theme.PurpleGrey80
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
-    isFavorite: Boolean,
+    isFavorite: Boolean = false,
     onFavoriteClicked: (Boolean) -> Unit,
 ) {
     val color = if (isFavorite) Pink else PurpleGrey80

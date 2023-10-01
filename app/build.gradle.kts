@@ -92,6 +92,12 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12")
     // endregion
 
+    // region Paging
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-compose:3.1.0")
+    implementation("androidx.room:room-paging:$roomVersion")
+    // endregion
+
     // region Database
     implementation ("androidx.room:room-runtime:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")

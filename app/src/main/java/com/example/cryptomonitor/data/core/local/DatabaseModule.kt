@@ -3,7 +3,7 @@ package com.example.cryptomonitor.data.core.local
 import android.content.Context
 import androidx.room.Room
 import com.example.cryptomonitor.data.assets.local.AssetDao
-import com.example.cryptomonitor.data.assets.local.FavoriteAssetDao
+import com.example.cryptomonitor.data.assets.local.FavoriteIdDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +20,8 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideFavoriteAssetDao(appDatabase: CryptoMonitorDatabase): FavoriteAssetDao {
-        return appDatabase.favoriteAssetDao
+    fun provideFavoriteIdDao(appDatabase: CryptoMonitorDatabase): FavoriteIdDao {
+        return appDatabase.favoriteIdDao
     }
 
     @Provides
