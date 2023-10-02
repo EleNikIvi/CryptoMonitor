@@ -1,49 +1,39 @@
 package com.example.cryptomonitor.ui.assets
 
 import androidx.compose.runtime.Immutable
-import com.example.cryptomonitor.model.Asset
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import com.example.cryptomonitor.model.FavoriteAsset
 
 /**
  * Screen state that exposed to View
  */
 @Immutable
 data class AssetsScreenState(
-    val contentState: AssetsContentState = AssetsContentState.EmptyScreen,
     val searchTerm: String = "",
     val showFavorite: Boolean = false,
-    val isRefreshing: Boolean = false,
 )
 
-@Immutable
 sealed interface AssetsContentState {
-    object EmptyScreen : AssetsContentState
-
-    data class Loaded(
-        val assets: List<AssetState>,
-        val loadingMore: Boolean = false
-    ) : AssetsContentState
-
-    object ErrorMessage : AssetsContentState
-
-    object Loading : AssetsContentState
+    object RefreshingEmptyState : AssetsContentState
+    object ErrorRefreshEmptyState : AssetsContentState
+    object ErrorRefreshState : AssetsContentState
+    object RefreshingState : AssetsContentState
+    object LoadingState : AssetsContentState
+    object LoadedState : AssetsContentState
 }
 
-data class AssetState(
-    val assetId: String,
-    val name: String,
-    val isCrypto: Boolean,
-    val dataSymbolsCount: String,
-    val volume1DayUsd: String,
-    val priceUsd: String = "",
-    var isFavorite: Boolean = false,
-)
-
-fun Asset.toState(isFavorite: Boolean) = AssetState(
-    assetId = assetId,
-    name = name,
-    isCrypto = typeIsCrypto == 1,
-    dataSymbolsCount = dataSymbolsCount.toString(),
-    volume1DayUsd = volume1DayUsd.toString(),
-    priceUsd = priceUsd?.toString() ?: "",
-    isFavorite = isFavorite,
-)
+fun LazyPagingItems<FavoriteAsset>.getContentState(): AssetsContentState =
+    if (this.loadState.refresh is LoadState.Loading && this.itemCount == 0) {
+        AssetsContentState.RefreshingEmptyState
+    } else if (this.loadState.refresh is LoadState.Error && this.itemCount == 0) {
+        AssetsContentState.ErrorRefreshEmptyState
+    } else if (this.loadState.refresh is LoadState.Error) {
+        AssetsContentState.ErrorRefreshState
+    } else if (this.loadState.refresh is LoadState.Loading) {
+        AssetsContentState.RefreshingState
+    } else if (this.loadState.append is LoadState.Loading) {
+        AssetsContentState.LoadingState
+    } else {
+        AssetsContentState.LoadedState
+    }

@@ -2,14 +2,13 @@ package com.example.cryptomonitor.data.assets.local
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.cryptomonitor.model.Asset
+import com.example.cryptomonitor.data.assets.local.entity.Asset
 
 @Dao
-interface AssetDao {
+interface AssetsDao {
     @Query("SELECT * FROM asset")
     fun getAllAssets(): PagingSource<Int, Asset>
 

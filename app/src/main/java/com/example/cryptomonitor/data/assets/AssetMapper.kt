@@ -1,7 +1,7 @@
 package com.example.cryptomonitor.data.assets
 
 import com.example.cryptomonitor.data.assets.remote.assets.AssetDto
-import com.example.cryptomonitor.model.Asset
+import com.example.cryptomonitor.data.assets.local.entity.Asset
 
 object AssetMapper {
     fun AssetDto.toModel() = Asset(

@@ -13,31 +13,46 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cryptomonitor.R
+import com.example.cryptomonitor.model.FavoriteAsset
 import com.example.cryptomonitor.ui.assets.AssetsContentState
 import com.example.cryptomonitor.ui.assets.AssetsScreenState
 import com.example.cryptomonitor.ui.assets.AssetsViewModel
+import com.example.cryptomonitor.ui.assets.getContentState
 import com.example.cryptomonitor.ui.core.DevicePreviews
 import com.example.cryptomonitor.ui.core.component.CircularProgressDialog
+import com.example.cryptomonitor.ui.core.component.ErrorRefreshDataMessage
+import com.example.cryptomonitor.ui.core.component.ErrorRefreshDataSnackbar
 import com.example.cryptomonitor.ui.core.component.SearchFieldComponent
+import com.example.cryptomonitor.ui.core.component.pullrefresh.PullRefreshIndicator
+import com.example.cryptomonitor.ui.core.component.pullrefresh.pullRefresh
+import com.example.cryptomonitor.ui.core.component.pullrefresh.rememberPullRefreshState
 import com.example.cryptomonitor.ui.core.theme.CryptoMonitorTheme
 import com.example.cryptomonitor.ui.core.theme.Purple40
 import com.example.cryptomonitor.ui.core.theme.Purple80
 import com.example.cryptomonitor.ui.core.theme.PurpleGrey80
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun AssetsScreen(
@@ -45,6 +60,7 @@ fun AssetsScreen(
     viewModel: AssetsViewModel,
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+    val assets = viewModel.assets.collectAsLazyPagingItems()
     val onSearchTermChange: (String) -> Unit = viewModel::onSearchTermChange
     val onSearchFieldClear: () -> Unit = viewModel::onSearchFieldClear
     val showFavorites: (Boolean) -> Unit = viewModel::onShowFavorite
@@ -52,6 +68,7 @@ fun AssetsScreen(
 
     AssetsScreen(
         screenState = screenState,
+        assets = assets,
         onShowFavorites = showFavorites,
         onFavoriteSelected = onFavoriteSelected,
         onAssetSelected = onAssetSelected,
@@ -64,16 +81,19 @@ fun AssetsScreen(
 @Composable
 fun AssetsScreen(
     screenState: AssetsScreenState,
+    assets: LazyPagingItems<FavoriteAsset>,
     onShowFavorites: (Boolean) -> Unit,
     onFavoriteSelected: (String, Boolean) -> Unit,
     onAssetSelected: (Long) -> Unit,
     onSearchTermChange: (String) -> Unit,
     onSearchFieldClear: () -> Unit,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             AssetsToolbar(
                 screenState.searchTerm,
@@ -91,43 +111,33 @@ fun AssetsScreen(
                 .background(PurpleGrey80),
             contentAlignment = Alignment.TopCenter
         ) {
-            when (screenState.contentState) {
-                is AssetsContentState.EmptyScreen -> {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = stringResource(id = R.string.message_empty),
-                        textAlign = TextAlign.Center,
-                        fontSize = 40.sp,
-                        fontFamily = FontFamily.Cursive,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
+            val contentState = assets.getContentState()
+            if (contentState is AssetsContentState.RefreshingEmptyState) {
+                CircularProgressDialog(message = stringResource(id = R.string.message_wait))
+            } else if (contentState is AssetsContentState.ErrorRefreshEmptyState) {
+                ErrorRefreshDataMessage(refresh = assets::refresh)
+            } else if (contentState is AssetsContentState.ErrorRefreshState) {
+                ErrorRefreshDataSnackbar(snackbarHostState)
+            }
 
-                is AssetsContentState.Loaded -> {
+            Column {
+                val pullRefreshState = rememberPullRefreshState(
+                    contentState is AssetsContentState.RefreshingState,
+                    { assets.refresh() }
+                )
+
+                Box(Modifier.pullRefresh(pullRefreshState)) {
                     AssetsListScreen(
-                        contentState = screenState.contentState,
+                        assets = assets,
+                        contentState = contentState,
                         onFavoriteSelected = onFavoriteSelected,
                         onAssetSelected = onAssetSelected,
                     )
-                }
-
-                is AssetsContentState.ErrorMessage -> {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = stringResource(id = R.string.message_error),
-                        textAlign = TextAlign.Center,
-                        fontSize = 40.sp,
-                        fontFamily = FontFamily.Cursive,
-                        fontWeight = FontWeight.Bold,
+                    PullRefreshIndicator(
+                        contentState is AssetsContentState.RefreshingState,
+                        pullRefreshState,
+                        Modifier.align(Alignment.TopCenter)
                     )
-                }
-
-                is AssetsContentState.Loading -> {
-                    CircularProgressDialog(message = stringResource(id = R.string.message_wait))
                 }
             }
         }
@@ -142,7 +152,6 @@ private fun AssetsToolbar(
     onSearchTermChange: (String) -> Unit = {},
     onSearchFieldClear: () -> Unit = {},
 ) {
-
     Column(
         modifier = Modifier
             .background(Brush.horizontalGradient(listOf(Purple80, Purple40)))
@@ -151,12 +160,11 @@ private fun AssetsToolbar(
     ) {
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .padding(bottom = 8.dp)
+                .fillMaxWidth(),
             text = stringResource(id = R.string.app_name),
-            textAlign = TextAlign.Center,
-            fontSize = 40.sp,
-            fontFamily = FontFamily.Cursive,
+            textAlign = TextAlign.Start,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
         )
         Row(
@@ -186,16 +194,24 @@ private fun AssetsToolbar(
 @Composable
 private fun RecipesScreenPreview(
     @PreviewParameter(AssetsScreenStateProvider::class)
-    screenState: AssetsScreenState
+    assetsListFlow: MutableStateFlow<PagingData<FavoriteAsset>>,
 ) {
     CryptoMonitorTheme {
-        AssetsScreen(
-            screenState = screenState,
-            onShowFavorites = {},
-            onFavoriteSelected = { _, _ -> },
-            onAssetSelected = {},
-            onSearchTermChange = {},
-            onSearchFieldClear = {},
-        )
+        CompositionLocalProvider(
+            LocalInspectionMode provides true,
+        ) {
+            val lazyPagingItems = assetsListFlow.collectAsLazyPagingItems()
+            AssetsScreen(
+                screenState = AssetsScreenState(),
+                assets = lazyPagingItems,
+                onShowFavorites = {},
+                onFavoriteSelected = { _, _ -> },
+                onAssetSelected = {},
+                onSearchTermChange = {},
+                onSearchFieldClear = {},
+            )
+        }
     }
 }
+
+

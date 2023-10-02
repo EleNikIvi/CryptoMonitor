@@ -94,7 +94,8 @@ dependencies {
 
     // region Paging
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
-    implementation("androidx.paging:paging-compose:3.1.0")
+    implementation("androidx.paging:paging-common-ktx:3.3.0-alpha02")
+    implementation("androidx.paging:paging-compose:3.2.1")
     implementation("androidx.room:room-paging:$roomVersion")
     // endregion
 
@@ -108,7 +109,8 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:2.2.2")
     // endregion
 
-    // region JUnit
+    // region test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("junit:junit:4.13.2")
     // endregion
 

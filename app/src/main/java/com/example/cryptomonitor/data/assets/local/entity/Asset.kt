@@ -1,4 +1,4 @@
-package com.example.cryptomonitor.model
+package com.example.cryptomonitor.data.assets.local.entity
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
