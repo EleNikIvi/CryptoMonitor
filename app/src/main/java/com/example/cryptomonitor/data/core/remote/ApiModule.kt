@@ -1,6 +1,7 @@
 package com.example.cryptomonitor.data.core.remote
 
-import com.example.cryptomonitor.data.assets.remote.assets.AssetsApi
+import com.example.cryptomonitor.data.remote.assets.AssetsApi
+import com.example.cryptomonitor.data.remote.exchangerate.ExchangeRateApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -76,4 +77,9 @@ object ApiModule {
     @Singleton
     @Provides
     fun provideAssetsApi(retrofit: Retrofit): AssetsApi = retrofit.create(AssetsApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideExchangeRateApi(retrofit: Retrofit): ExchangeRateApi =
+        retrofit.create(ExchangeRateApi::class.java)
 }

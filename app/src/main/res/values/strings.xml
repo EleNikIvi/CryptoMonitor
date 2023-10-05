@@ -1,9 +1,19 @@
 <resources>
     <string name="app_name">Crypto Monitor</string>
     <string name="button_clear_description">Clear search</string>
+    <string name="navigate_back">Navigate back</string>
     <string name="search_hint">Search by asset\'s name</string>
     <string name="button_favorite_description">Favorite button</string>
-    <string name="message_empty">There is no data yet</string>
     <string name="message_wait">Please wait</string>
-    <string name="message_error">Can\'t fetch data. Check your network and try pull to refresh</string>
+    <string name="message_error_refresh">Can\'t fetch data. Please, check your network or click this message to refresh later</string>
+    <string name="message_snackbar_error_refresh">Can\'t refresh data. Please, check your network or try to refresh later</string>
+    <string name="asset_details_label">Asset Details</string>
+    <string name="exchange_rate_label">Exchange rate</string>
+    <string name="last_updated_label">Last updated: %1$s</string>
+    <string name="is_crypto_label">Is crypto: %1$s</string>
+    <string name="data_symbols_count">Data symbols count: %1$s</string>
+    <string name="volume_1_day_usd">Volume 1 day USD: %1$s</string>
+    <string name="price_usd">Price USD: %1$s</string>
+    <string name="exchange_label">%1$s -> %2$s</string>
+    <string name="rate_label">Exchange rate: %1$s</string>
 </resources>

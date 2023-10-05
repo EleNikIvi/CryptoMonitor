@@ -43,7 +43,7 @@ class CryptoMonitorNavController(
         navController.navigateUp()
     }
 
-    fun navigateToAssetDetails(assetId: Long, from: NavBackStackEntry) {
+    fun navigateToAssetDetails(assetId: String, from: NavBackStackEntry) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.ASSET_DETAILS_ROUTE}/$assetId")

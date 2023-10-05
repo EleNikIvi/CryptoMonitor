@@ -3,7 +3,7 @@ package com.example.cryptomonitor.ui.assets
 import androidx.compose.runtime.Immutable
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.cryptomonitor.model.FavoriteAsset
+import com.example.cryptomonitor.core.model.FavoriteAsset
 
 /**
  * Screen state that exposed to View

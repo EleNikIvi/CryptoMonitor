@@ -1,26 +1,21 @@
 package com.example.cryptomonitor.ui.assets
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import com.example.cryptomonitor.core.model.FavoriteAsset
 import com.example.cryptomonitor.domain.asset.AssetsInteractor
-import com.example.cryptomonitor.model.FavoriteAsset
-import com.example.cryptomonitor.model.Result
 import com.example.cryptomonitor.ui.core.flow.SaveableStateFlow.Companion.saveableStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,7 +36,6 @@ class AssetsViewModel @Inject constructor(
         key = "assets-view-model-favorite-key",
         initialValue = false,
     )
-    private val _isRefreshing = MutableStateFlow(false)
 
     val assets: Flow<PagingData<FavoriteAsset>> = combine(
         _assets,
@@ -74,6 +68,13 @@ class AssetsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = AssetsScreenState()
     )
+
+    private val ICON_SIZE = 32
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            assetsInteractor.fetchIcons(ICON_SIZE)
+        }
+    }
 
     fun onSearchTermChange(searchTerm: String) {
         _searchTerm.value = searchTerm

@@ -30,12 +30,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.cryptomonitor.R
-import com.example.cryptomonitor.model.FavoriteAsset
+import com.example.cryptomonitor.core.model.FavoriteAsset
 import com.example.cryptomonitor.ui.assets.AssetsContentState
 import com.example.cryptomonitor.ui.assets.AssetsScreenState
 import com.example.cryptomonitor.ui.assets.AssetsViewModel
@@ -52,15 +52,15 @@ import com.example.cryptomonitor.ui.core.theme.CryptoMonitorTheme
 import com.example.cryptomonitor.ui.core.theme.Purple40
 import com.example.cryptomonitor.ui.core.theme.Purple80
 import com.example.cryptomonitor.ui.core.theme.PurpleGrey80
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun AssetsScreen(
-    onAssetSelected: (Long) -> Unit,
-    viewModel: AssetsViewModel,
+    onAssetSelected: (String) -> Unit,
+    viewModel: AssetsViewModel = hiltViewModel<AssetsViewModel>(),
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
-    val assets = viewModel.assets.collectAsLazyPagingItems()
     val onSearchTermChange: (String) -> Unit = viewModel::onSearchTermChange
     val onSearchFieldClear: () -> Unit = viewModel::onSearchFieldClear
     val showFavorites: (Boolean) -> Unit = viewModel::onShowFavorite
@@ -68,7 +68,7 @@ fun AssetsScreen(
 
     AssetsScreen(
         screenState = screenState,
-        assets = assets,
+        assetsFlow = viewModel.assets,
         onShowFavorites = showFavorites,
         onFavoriteSelected = onFavoriteSelected,
         onAssetSelected = onAssetSelected,
@@ -81,10 +81,10 @@ fun AssetsScreen(
 @Composable
 fun AssetsScreen(
     screenState: AssetsScreenState,
-    assets: LazyPagingItems<FavoriteAsset>,
+    assetsFlow: Flow<PagingData<FavoriteAsset>>,
     onShowFavorites: (Boolean) -> Unit,
     onFavoriteSelected: (String, Boolean) -> Unit,
-    onAssetSelected: (Long) -> Unit,
+    onAssetSelected: (String) -> Unit,
     onSearchTermChange: (String) -> Unit,
     onSearchFieldClear: () -> Unit,
 ) {
@@ -111,6 +111,8 @@ fun AssetsScreen(
                 .background(PurpleGrey80),
             contentAlignment = Alignment.TopCenter
         ) {
+
+            val assets = assetsFlow.collectAsLazyPagingItems()
             val contentState = assets.getContentState()
             if (contentState is AssetsContentState.RefreshingEmptyState) {
                 CircularProgressDialog(message = stringResource(id = R.string.message_wait))
@@ -192,7 +194,7 @@ private fun AssetsToolbar(
 
 @DevicePreviews
 @Composable
-private fun RecipesScreenPreview(
+private fun AssetsScreenPreview(
     @PreviewParameter(AssetsScreenStateProvider::class)
     assetsListFlow: MutableStateFlow<PagingData<FavoriteAsset>>,
 ) {
@@ -200,10 +202,9 @@ private fun RecipesScreenPreview(
         CompositionLocalProvider(
             LocalInspectionMode provides true,
         ) {
-            val lazyPagingItems = assetsListFlow.collectAsLazyPagingItems()
             AssetsScreen(
                 screenState = AssetsScreenState(),
-                assets = lazyPagingItems,
+                assetsFlow = assetsListFlow,
                 onShowFavorites = {},
                 onFavoriteSelected = { _, _ -> },
                 onAssetSelected = {},
