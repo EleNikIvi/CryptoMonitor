@@ -1,5 +1,6 @@
 package com.example.cryptomonitor.ui.assets
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,7 +29,8 @@ class AssetsViewModel @Inject constructor(
     private val _assets: Flow<PagingData<FavoriteAsset>> = assetsInteractor.getFavoriteAssets()
         .cachedIn(viewModelScope)
 
-    private val _searchTerm = savedStateHandle.saveableStateFlow(
+    @VisibleForTesting
+    internal val searchTerm = savedStateHandle.saveableStateFlow(
         key = "assets-view-model-search-key",
         initialValue = "",
     )
@@ -39,7 +41,7 @@ class AssetsViewModel @Inject constructor(
 
     val assets: Flow<PagingData<FavoriteAsset>> = combine(
         _assets,
-        _searchTerm.asStateFlow(),
+        searchTerm.asStateFlow(),
         _showFavorites.asStateFlow(),
     ) { assets, searchTerm, showFavorite ->
         val filteredBySearchTerm = if (searchTerm.isNotBlank()) {
@@ -56,7 +58,7 @@ class AssetsViewModel @Inject constructor(
     )
 
     val screenState: StateFlow<AssetsScreenState> = combine(
-        _searchTerm.asStateFlow(),
+        searchTerm.asStateFlow(),
         _showFavorites.asStateFlow(),
     ) { searchTerm, showFavorite  ->
         AssetsScreenState(
@@ -77,11 +79,11 @@ class AssetsViewModel @Inject constructor(
     }
 
     fun onSearchTermChange(searchTerm: String) {
-        _searchTerm.value = searchTerm
+        this.searchTerm.value = searchTerm
     }
 
     fun onSearchFieldClear() {
-        _searchTerm.value = ""
+        searchTerm.value = ""
     }
 
     fun onShowFavorite(show: Boolean) {

@@ -1,3 +1,4 @@
+@file:Suppress("UnstableApiUsage")
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -48,9 +49,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     val retrofitVersion = rootProject.extra["retrofit_version"]
     val okhttpLoggingVersion = rootProject.extra["okhttp_logging_version"]
     val moshiVersion = rootProject.extra["moshi_version"]
@@ -58,6 +69,7 @@ dependencies {
     val hiltVersion = rootProject.extra["hilt_version"]
     val roomVersion = rootProject.extra["room_version"]
     val navigationVersion = rootProject.extra["navigation_version"]
+    val pagingVersion = rootProject.extra["paging_version"]
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -93,7 +105,7 @@ dependencies {
     // endregion
 
     // region Paging
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
     implementation("androidx.paging:paging-common-ktx:3.3.0-alpha02")
     implementation("androidx.paging:paging-compose:3.2.1")
     implementation("androidx.room:room-paging:$roomVersion")
@@ -112,6 +124,9 @@ dependencies {
     // region test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation("app.cash.turbine:turbine:0.13.0")
+    testImplementation("androidx.paging:paging-testing:$pagingVersion")
     // endregion
 
     // region Android testing

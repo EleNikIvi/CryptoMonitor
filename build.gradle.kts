@@ -14,5 +14,6 @@ buildscript {
         set("hilt_version", "2.44")
         set("room_version", "2.5.2")
         set("navigation_version", "2.7.3")
+        set("paging_version", "3.2.1")
     }
 }
