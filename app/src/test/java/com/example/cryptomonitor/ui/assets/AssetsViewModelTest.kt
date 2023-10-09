@@ -12,7 +12,6 @@ import com.example.cryptomonitor.domain.asset.AssetsInteractor
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -78,7 +77,6 @@ class AssetsViewModelTest {
             // With the asSnapshot complete, we can now verify that the snapshot
             // has the expected values
             assertEquals(expected, itemsSnapshot)
-
         }
 
     @Test
@@ -153,7 +151,6 @@ class AssetsViewModelTest {
             }
         }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `WHEN search is cleared THEN screen state searchTerm becomes empty`() =
         runTest {

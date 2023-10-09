@@ -14,7 +14,7 @@ interface ExchangeRateDao {
     suspend fun addExchangeRate(exchangeRate: ExchangeRateEntity)
 
     @Query("SELECT exr.rateUpdated AS rateUpdated, exr.assetIdBase AS assetIdBase, exr.assetIdQuote AS assetIdQuote, exr.rate AS rate FROM exchange_rate exr WHERE exr.assetIdBase = :assetIdBase")
-    fun getExchangeRate(assetIdBase: String): Flow<ExchangeRate>
+    fun getExchangeRate(assetIdBase: String): Flow<ExchangeRate?>
 
     @Query("DELETE FROM exchange_rate WHERE assetIdBase = :assetId")
     suspend fun deleteByAssetId(assetId: String)

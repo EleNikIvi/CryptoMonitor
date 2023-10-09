@@ -8,6 +8,6 @@ interface AssetDetailsRepository {
     suspend fun fetchExchangeRate(assetId: String)
     fun getAssetIcon(assetId: String): Flow<String>
     fun getAssetDetails(assetId: String): Flow<AssetDetails>
-    fun getExchangeRate(assetId: String): Flow<ExchangeRate>
+    fun getExchangeRate(assetId: String): Flow<ExchangeRate?>
     suspend fun fetchAsset(assetId: String)
 }

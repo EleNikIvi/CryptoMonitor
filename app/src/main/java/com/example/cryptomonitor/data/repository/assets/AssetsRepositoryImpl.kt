@@ -34,7 +34,7 @@ class AssetsRepositoryImpl @Inject constructor(
                     iconsResult.body()?.map {
                         it.toEntity()
                     }?.let {
-                        iconsDao.deleteAssets()
+                        iconsDao.deleteIcons()
                         iconsDao.addIcons(it)
                     }
                 }

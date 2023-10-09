@@ -30,6 +30,10 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        debug {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_18
@@ -40,6 +44,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -61,6 +66,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     val retrofitVersion = rootProject.extra["retrofit_version"]
     val okhttpLoggingVersion = rootProject.extra["okhttp_logging_version"]

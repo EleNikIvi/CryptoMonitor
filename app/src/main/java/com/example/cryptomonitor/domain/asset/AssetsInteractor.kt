@@ -12,7 +12,7 @@ class AssetsInteractor @Inject constructor(
     suspend fun fetchIcons(iconSize: Int) = assetsRepository.fetchIcons(iconSize)
     fun getFavoriteAssets(): Flow<PagingData<FavoriteAsset>> = assetsRepository.getFavoriteAssets()
 
-    suspend fun saveFavorite(assetId: String, isFavorite: Boolean) =
+    suspend fun saveFavorite(assetId: String, isFavorite: Boolean) {
         assetsRepository.saveFavorite(assetId, isFavorite)
-
+    }
 }

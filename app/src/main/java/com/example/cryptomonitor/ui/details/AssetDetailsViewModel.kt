@@ -11,7 +11,6 @@ import com.example.cryptomonitor.ui.core.flow.SaveableStateFlow.Companion.saveab
 import com.example.cryptomonitor.ui.core.navigation.MainDestinations.ASSET_ID_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -46,16 +45,15 @@ class AssetDetailsViewModel @Inject constructor(
         _exchangeRate.asStateFlow(),
         _assetIconUrl.asStateFlow(),
     ) { isLoading, assetDetails, exchangeRate, iconUrl ->
-        val detailsState =
-            if (isLoading && assetDetails.assetId.isEmpty()) {
-                DetailsContentState.Loading
-            } else if (assetDetails.assetId.isNotEmpty()) {
-                DetailsContentState.Loaded(
-                    details = assetDetails
-                )
-            } else {
-                DetailsContentState.Error
-            }
+        val detailsState = if (isLoading && assetDetails.assetId.isEmpty()) {
+            DetailsContentState.Loading
+        } else if (assetDetails.assetId.isNotEmpty()) {
+            DetailsContentState.Loaded(
+                details = assetDetails
+            )
+        } else {
+            DetailsContentState.Error
+        }
 
         val rateState = if (isLoading && exchangeRate == null) {
             RateContentState.Loading
@@ -111,6 +109,7 @@ class AssetDetailsViewModel @Inject constructor(
     fun fetchExchangeRate() {
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.update { true }
+
             assetDetailsInteractor.fetchExchangeRate(_assetId)
 
             _isLoading.update { false }
@@ -121,8 +120,6 @@ class AssetDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _isLoading.update { true }
 
-            // Delay is necessary because of request limit for the free API key
-            delay(20000)
             assetDetailsInteractor.fetchAsset(_assetId)
 
             _isLoading.update { false }

@@ -13,8 +13,8 @@ interface IconsDao {
     suspend fun addIcons(icons: List<IconEntity>)
 
     @Query("DELETE FROM icon")
-    suspend fun deleteAssets()
+    suspend fun deleteIcons()
 
     @Query("SELECT url FROM icon WHERE assetId = :assetId LIMIT 1")
-    fun getAssetIconUrl(assetId: String): Flow<String>
+    fun getIconUrl(assetId: String): Flow<String>
 }

@@ -49,9 +49,9 @@ class AssetDetailsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAssetIcon(assetId: String): Flow<String> = iconsDao.getAssetIconUrl(assetId)
+    override fun getAssetIcon(assetId: String): Flow<String> = iconsDao.getIconUrl(assetId)
     override fun getAssetDetails(assetId: String): Flow<AssetDetails> = assetDetailsDao.getAssetDetails(assetId = assetId)
-    override fun getExchangeRate(assetId: String): Flow<ExchangeRate> = exchangeRateDao.getExchangeRate(assetId)
+    override fun getExchangeRate(assetId: String): Flow<ExchangeRate?> = exchangeRateDao.getExchangeRate(assetId)
 
     override suspend fun fetchAsset(assetId: String) {
         try {

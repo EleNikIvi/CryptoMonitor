@@ -20,6 +20,6 @@ class AssetDetailsInteractor @Inject constructor(
     fun getAssetDetails(assetId: String): Flow<AssetDetails> =
         assetDetailsRepository.getAssetDetails(assetId = assetId)
 
-    fun getExchangeRate(assetId: String): Flow<ExchangeRate> =
+    fun getExchangeRate(assetId: String): Flow<ExchangeRate?> =
         assetDetailsRepository.getExchangeRate(assetId = assetId)
 }

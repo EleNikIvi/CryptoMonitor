@@ -1,6 +1,5 @@
 package com.example.cryptomonitor.ui.assets
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,8 +28,7 @@ class AssetsViewModel @Inject constructor(
     private val _assets: Flow<PagingData<FavoriteAsset>> = assetsInteractor.getFavoriteAssets()
         .cachedIn(viewModelScope)
 
-    @VisibleForTesting
-    internal val searchTerm = savedStateHandle.saveableStateFlow(
+    private val searchTerm = savedStateHandle.saveableStateFlow(
         key = "assets-view-model-search-key",
         initialValue = "",
     )
@@ -50,7 +48,9 @@ class AssetsViewModel @Inject constructor(
             }
         } else assets
 
-        if (showFavorite) filteredBySearchTerm.filter { it.isFavorite ?: false } else filteredBySearchTerm
+        if (showFavorite) filteredBySearchTerm.filter {
+            it.isFavorite ?: false
+        } else filteredBySearchTerm
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -60,7 +60,7 @@ class AssetsViewModel @Inject constructor(
     val screenState: StateFlow<AssetsScreenState> = combine(
         searchTerm.asStateFlow(),
         _showFavorites.asStateFlow(),
-    ) { searchTerm, showFavorite  ->
+    ) { searchTerm, showFavorite ->
         AssetsScreenState(
             searchTerm = searchTerm,
             showFavorite = showFavorite,
@@ -72,6 +72,7 @@ class AssetsViewModel @Inject constructor(
     )
 
     private val ICON_SIZE = 32
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             assetsInteractor.fetchIcons(ICON_SIZE)
