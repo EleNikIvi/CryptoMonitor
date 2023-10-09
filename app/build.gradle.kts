@@ -1,4 +1,7 @@
 @file:Suppress("UnstableApiUsage")
+
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -25,14 +28,19 @@ android {
         }
     }
 
+    val apiKey = gradleLocalProperties(rootDir).getProperty("apikey")
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("String", "apiKey", apiKey)
         }
         debug {
             applicationIdSuffix = ".debug"
             isDebuggable = true
+            buildConfigField("String", "apiKey", apiKey)
         }
     }
     compileOptions {

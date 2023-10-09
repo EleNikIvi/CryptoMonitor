@@ -1,5 +1,6 @@
 package com.example.cryptomonitor.data.core.remote
 
+import com.example.cryptomonitor.BuildConfig
 import com.example.cryptomonitor.data.remote.assets.AssetsApi
 import com.example.cryptomonitor.data.remote.exchangerate.ExchangeRateApi
 import com.squareup.moshi.Moshi
@@ -23,7 +24,6 @@ import javax.inject.Singleton
 object ApiModule {
     private const val BASE_URL = "https://rest.coinapi.io/"
     private const val HEADER_NAME = "X-CoinAPI-Key"
-    private const val API_KEY = "8EF674B9-FF41-46ED-8BF2-63D6BAAF492A"
 
     @Singleton
     @Provides
@@ -37,7 +37,7 @@ object ApiModule {
     fun providesHttpHeaderInterceptor() = Interceptor { chain ->
         val original: Request = chain.request()
         val request: Request = original.newBuilder()
-            .header(HEADER_NAME, API_KEY)
+            .header(HEADER_NAME, BuildConfig.apiKey)
             .build()
         chain.proceed(request)
     }
