@@ -1,4 +1,4 @@
-package com.example.cryptomonitor.ui.core.component
+package com.example.cryptomonitor.ui.assets.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,17 +8,22 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cryptomonitor.R
+import com.example.cryptomonitor.ui.core.theme.CryptoMonitorTheme
 import com.example.cryptomonitor.ui.core.theme.Yellow
 import kotlinx.coroutines.launch
 
 @Composable
-fun ErrorRefreshDataMessage(refresh: () -> Unit = {}) {
+fun ErrorRefreshDataMessage(
+    refresh: () -> Unit = {}
+) {
     Text(
         modifier = Modifier
             .clickable { refresh() }
@@ -43,5 +48,13 @@ fun ErrorRefreshDataSnackbar(snackbarHostState: SnackbarHostState) {
                 duration = SnackbarDuration.Short,
             )
         }
+    }
+}
+
+@Preview(group = "Error refresh message")
+@Composable
+private fun ErrorRefreshDataMessagePreview() {
+    CryptoMonitorTheme {
+        ErrorRefreshDataMessage()
     }
 }

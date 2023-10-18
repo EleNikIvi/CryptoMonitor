@@ -127,35 +127,9 @@ private fun AssetDetailsCard(assetDetailsState: DetailsContentState) {
         ),
     ) {
         when (assetDetailsState) {
-            is DetailsContentState.Loading ->
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(
-                                16.dp
-                            )
-                    )
-                }
-
+            is DetailsContentState.Loading -> LoadingIndicator()
             is DetailsContentState.Loaded -> LoadedAssetDetailsScreen(assetDetailsState)
-            is DetailsContentState.Error -> Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(
-                            16.dp
-                        ),
-                    textAlign = TextAlign.Center,
-                    text = stringResource(id = R.string.message_error_refresh),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+            is DetailsContentState.Error -> ErrorMessage()
         }
     }
 }
@@ -178,34 +152,9 @@ private fun ExchangeRateCard(
         ),
     ) {
         when (rateState) {
-            is RateContentState.Loading -> Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(16.dp)
-                )
-            }
-
+            is RateContentState.Loading -> LoadingIndicator()
             is RateContentState.Loaded -> LoadedExchangeRateScreen(rateState)
-            is RateContentState.Error -> Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { fetchData() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(
-                            16.dp
-                        ),
-                    textAlign = TextAlign.Center,
-                    text = stringResource(id = R.string.message_error_refresh),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+            is RateContentState.Error -> ErrorMessage(fetchData = fetchData)
         }
     }
 }
@@ -275,6 +224,39 @@ private fun AssetDetailsToolbar(
             }
         }
     )
+}
+
+@Composable
+private fun LoadingIndicator() {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .padding(16.dp)
+        )
+    }
+}
+
+@Composable
+private fun ErrorMessage(fetchData: () -> Unit = {}) {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier
+                .clickable { fetchData() }
+                .padding(
+                    16.dp
+                ),
+            textAlign = TextAlign.Center,
+            text = stringResource(id = R.string.message_error_refresh),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
 }
 
 @DevicePreviews

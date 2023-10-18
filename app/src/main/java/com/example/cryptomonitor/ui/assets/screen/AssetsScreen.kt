@@ -1,6 +1,7 @@
 package com.example.cryptomonitor.ui.assets.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,8 +43,8 @@ import com.example.cryptomonitor.ui.assets.AssetsViewModel
 import com.example.cryptomonitor.ui.assets.getContentState
 import com.example.cryptomonitor.ui.core.DevicePreviews
 import com.example.cryptomonitor.ui.core.component.CircularProgressDialog
-import com.example.cryptomonitor.ui.core.component.ErrorRefreshDataMessage
-import com.example.cryptomonitor.ui.core.component.ErrorRefreshDataSnackbar
+import com.example.cryptomonitor.ui.assets.screen.ErrorRefreshDataMessage
+import com.example.cryptomonitor.ui.assets.screen.ErrorRefreshDataSnackbar
 import com.example.cryptomonitor.ui.core.component.SearchFieldComponent
 import com.example.cryptomonitor.ui.core.component.pullrefresh.PullRefreshIndicator
 import com.example.cryptomonitor.ui.core.component.pullrefresh.pullRefresh
@@ -52,6 +53,7 @@ import com.example.cryptomonitor.ui.core.theme.CryptoMonitorTheme
 import com.example.cryptomonitor.ui.core.theme.Purple40
 import com.example.cryptomonitor.ui.core.theme.Purple80
 import com.example.cryptomonitor.ui.core.theme.PurpleGrey80
+import com.example.cryptomonitor.ui.core.theme.Yellow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
